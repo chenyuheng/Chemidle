@@ -85,7 +85,7 @@ function half_equation_parser(tokens) {
             console.error("parser error: empty item");
             return;
         }
-        items.push(item);
+        items.push(item_parser(item));
     }
     return items;
 }
@@ -121,4 +121,33 @@ function equation_parser(equation_str) {
     }
     let equation = {"left": left, "right": right};
     return equation;
+}
+
+function atoms_counter(items) {
+    let count = {};
+    for (i in items) {
+        let item = items[i];
+        for (k in item["atoms"]) {
+            if (count[k] == undefined) {
+                count[k] = 0;
+            }
+            count[k] += item["atoms"][k] * item["count"];
+        }
+    }
+    return count;
+}
+
+// check if the equation is balanced
+function equation_checker(equation) {
+    let left_count = atoms_counter(equation.left);
+    let right_count = atoms_counter(equation.right);
+    if (left_count.size != right_count.size) {
+        return false;
+    }
+    for (k in left_count) {
+        if (left_count[k] != right_count[k]) {
+            return false;
+        }
+    }
+    return true;
 }
