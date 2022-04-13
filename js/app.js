@@ -1,7 +1,8 @@
-const token_set = ["(OH)",
+const token_set = [
     "He", "Li", "Be", "Na", "Mg", "Al", "Si",  "Cl", "Ca",
     "H", "B", "C", "N", "O", "F", "P", "S", "K",
-    "1", "2", "3", "4", "5", "=", "+"];
+    "1", "2", "3", "4", "5", 
+    "=", "+", "(", ")"];
 const number_tokens = ["1", "2", "3", "4", "5"];
 
 Array.prototype.count = function(element) {
@@ -21,6 +22,13 @@ Array.prototype.split = function(element) {
     }
     items.push(item);
     return items;
+}
+
+Object.prototype.add = function(key, number) {
+    if (this[key] == undefined) {
+        this[key] = 0;
+    }
+    this[key] += number;
 }
 
 function equation_tokenizer(equation_str) {
@@ -47,30 +55,63 @@ function equation_tokenizer(equation_str) {
 }
 
 function item_parser(item_tokens) {
-    let item = {"count": 1, "atoms": {}}
+    let item = {"count": 1, "atoms": {}};
+    item["atoms"] = {};
     if (number_tokens.includes(item_tokens[0])) {
         item["count"] = parseInt(item_tokens[0]);
         item_tokens.shift();
     }
+    let in_paren = false;
+    let paren_count = {};
     while (item_tokens.length != 0) {
-        if (number_tokens.includes(item_tokens[1])) {
-            if (item_tokens[0] == "(OH)") {
-                if (item["atoms"]["O"] == undefined) {
-                    item["atoms"]["O"] = 0;
-                }
-                if (item["atoms"]["H"] == undefined) {
-                    item["atoms"]["H"] = 0;
-                }
-                item["atoms"]["O"] += parseInt(item_tokens[1]);
-                item["atoms"]["H"] += parseInt(item_tokens[1]);
+        if (!in_paren) {
+            if (item_tokens[0] == "(") {
+                in_paren = true;
+                item_tokens.shift();
+                continue;
+            }
+            if (number_tokens.includes(item_tokens[1])) {
+                item["atoms"].add(item_tokens[0], parseInt(item_tokens[1]));
+                item_tokens.shift();
             } else {
-                item["atoms"][item_tokens[0]] = parseInt(item_tokens[1]);
+                item["atoms"].add(item_tokens[0], 1);
             }
             item_tokens.shift();
         } else {
-            item["atoms"][item_tokens[0]] = 1;
+            if (item_tokens[0] == "(") {
+                console.error("parse item: double start parenthesis");
+                return;
+            }
+            if (item_tokens[0] == ")") {
+                in_paren = false;
+                let count = parseInt(item_tokens[1]);
+                if (count == NaN) {
+                    console.error("parse item: not number after ')'");
+                    return;
+                }
+                for (key in paren_count) {
+                    if (key != "add") {
+                        item["atoms"].add(key, paren_count[key] * count);
+                    }
+                }
+                item_tokens.shift();
+                item_tokens.shift();
+                paren_count = {};
+            } else {
+                if (number_tokens.includes(item_tokens[1])) {
+                    paren_count.add(item_tokens[0], parseInt(item_tokens[1]));
+                    item_tokens.shift();
+                } else {
+                    paren_count.add(item_tokens[0], 1);
+                }
+                item_tokens.shift();
+            }
         }
-        item_tokens.shift();
+
+    }
+    if (in_paren) {
+        console.error("parse item: parenthesis not closed");
+        return;
     }
     return item;
 }
@@ -141,6 +182,8 @@ function atoms_counter(items) {
 function equation_checker(equation) {
     let left_count = atoms_counter(equation.left);
     let right_count = atoms_counter(equation.right);
+    console.log(left_count);
+    console.log(right_count);
     if (left_count.size != right_count.size) {
         return false;
     }
@@ -150,4 +193,22 @@ function equation_checker(equation) {
         }
     }
     return true;
+}
+
+function get_equations() {
+    let r = new XMLHttpRequest();
+    r.onreadystatechange = function () {
+        if(r.readyState === XMLHttpRequest.DONE && r.status === 200) {
+            let lines = r.responseText.split("\n");
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim();
+                if (line == "" || line.startsWith("#")) {
+                    continue;
+                }
+                console.log(equation_checker(equation_parser(line)));
+            }
+        }
+    };
+    r.open("GET", "data/equations.txt");
+    r.send();
 }
