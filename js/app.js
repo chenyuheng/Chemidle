@@ -1,9 +1,9 @@
 const token_set = [
     "He", "Li", "Be", "Na", "Mg", "Al", "Si",  "Cl", "Ca",
     "H", "B", "C", "N", "O", "F", "P", "S", "K",
-    "1", "2", "3", "4", "5", 
+    "1", "2", "3", "4", "5", "6", 
     "=", "+", "(", ")"];
-const number_tokens = ["1", "2", "3", "4", "5"];
+const number_tokens = ["1", "2", "3", "4", "5", "6"];
 
 Array.prototype.count = function(element) {
     return this.filter(x => x == element).length;
@@ -117,7 +117,6 @@ function item_parser(item_tokens) {
 }
 
 function half_equation_parser(tokens) {
-    console.log(tokens);
     let items = [];
     let items_tokens = tokens.split("+");
     for (let i = 0; i < items_tokens.length; i++) {
@@ -182,12 +181,15 @@ function atoms_counter(items) {
 function equation_checker(equation) {
     let left_count = atoms_counter(equation.left);
     let right_count = atoms_counter(equation.right);
-    console.log(left_count);
-    console.log(right_count);
+    // console.log(left_count);
+    // console.log(right_count);
     if (left_count.size != right_count.size) {
         return false;
     }
     for (k in left_count) {
+        if (k == "add") {
+            continue;
+        }
         if (left_count[k] != right_count[k]) {
             return false;
         }
@@ -200,13 +202,21 @@ function get_equations() {
     r.onreadystatechange = function () {
         if(r.readyState === XMLHttpRequest.DONE && r.status === 200) {
             let lines = r.responseText.split("\n");
+            let c = {};
             for (let i = 0; i < lines.length; i++) {
                 let line = lines[i].trim();
                 if (line == "" || line.startsWith("#")) {
                     continue;
                 }
-                console.log(equation_checker(equation_parser(line)));
+                let f = equation_checker(equation_parser(line));
+                if (!f) {
+                    console.log("check fail: " + line);
+                } else {
+                    let tokens = equation_tokenizer(line);
+                    c.add(tokens.length, 1);
+                }
             }
+            console.log(c);
         }
     };
     r.open("GET", "data/equations.txt");
