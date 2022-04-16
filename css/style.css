@@ -1,0 +1,74 @@
+body {
+    font-family: Arial;
+}
+.row {
+    display: flex;
+    justify-content: center;
+}
+.grid {
+    height: 5vw;
+    width: 5vw;
+    margin: 0.1em;
+    margin-bottom: 0.2em;
+    text-align: center;
+    font-size: 3vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-style: solid;
+    border-width: 2px;
+}
+.empty {
+    border-color: lightgrey;
+}
+.staged {
+    border-color: grey;
+}
+.missed {
+    border-color: grey;
+    background-color: grey;
+    color: white;
+}
+.hit {
+    border-color: forestgreen;
+    background-color: forestgreen;
+    color: white;
+}
+.partial-hit {
+    border-color: goldenrod;
+    background-color: goldenrod;
+    color: white;
+}
+.button {
+    height: 12vw;
+    width: 12vw;
+    font-size: 5vw;
+    margin: 0.1em;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    background-color: lightgrey;
+    user-select: none;
+}
+.button:hover {
+    background-color: silver;
+}
+.button:active {
+    background-color: darkgrey;
+}
+@media screen and (min-width: 992px) {
+    .grid {
+        height: 50px;
+        width: 50px;
+        font-size: 28px;
+    }
+}
+@media screen and (min-width: 600px) {
+    .button {
+        height: 50px;
+        width: 40px;
+        font-size: 24px;
+    }
+}
