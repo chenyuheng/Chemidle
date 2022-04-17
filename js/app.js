@@ -245,6 +245,7 @@ function get_equations() {
     r.onreadystatechange = function () {
         if(r.readyState === XMLHttpRequest.DONE && r.status === 200) {
             let lines = r.responseText.split("\n");
+            let equations = [];
             let c = {};
             for (let i = 0; i < lines.length; i++) {
                 let line = lines[i].trim();
@@ -253,21 +254,17 @@ function get_equations() {
                 }
                 let f = equation_checker(line);
                 if (!f) {
-                    console.log("check fail: " + line);
+                    console.error("check fail: " + line);
                 } else {
                     let tokens = equation_tokenizer(line);
                     c.add(tokens.length, 1);
+                    if (line.length <= row_length) {
+                        equations.push(line);
+                    }
                 }
             }
-            console.log(c);
-            while (true) {
-                let random = Math.floor(Math.random() * lines.length);
-                target_equation = lines[random].trim();
-                let target_equation_tokens = equation_tokenizer(target_equation, row_length);
-                if (target_equation_tokens.length <= row_length) {
-                    break;
-                }
-            }
+            let random = Math.floor(Math.random() * equations.length);
+            target_equation = equations[random];   
         }
     };
     r.open("GET", "data/equations.txt");
@@ -306,18 +303,27 @@ function handle_submit() {
             miss_count[target_token]++;
         }
     }
-    console.log(miss_count);
     col_no = 0;
     for (; col_no < row_length; col_no++) {
         let id = current_row + "_" + col_no;
-        $("#" + id).attr("class", "missed grid");
+        let grid = $("#" + id);
+        let button = $("[token='" + submit_equation_tokens[col_no] + "']");
         if (submit_equation_tokens[col_no] == target_equation_tokens[col_no]) {
-            $("#" + id).attr("class", "hit grid");
+            grid.attr("class", "hit grid");
+            button.attr("class", "hit button");
         } else if (target_equation_tokens.includes(submit_equation_tokens[col_no])) {
             if (miss_count[submit_equation_tokens[col_no]]  > 0) {
-                $("#" + id).attr("class", "partial-hit grid");
+                grid.attr("class", "partial-hit grid");
                 miss_count[submit_equation_tokens[col_no]]--;
+            } else {
+                grid.attr("class", "missed grid");
             }
+            if (button.attr("class") != "hit button") {
+                button.attr("class", "partial-hit button")
+            }
+        } else {
+            grid.attr("class", "missed grid");
+            button.attr("class", "missed button");
         }
     }
     current_row++;
@@ -381,6 +387,10 @@ function display_keyborad() {
                 button.text(char);
             }
             button.attr("onclick", "handle_button('" + char + "');");
+            button.attr("token", char);
+            if (char == "→") {
+                button.attr("token", "=")
+            }
             row.append(button);
         }
     }

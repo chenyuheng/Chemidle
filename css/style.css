@@ -18,6 +18,19 @@ body {
     border-style: solid;
     border-width: 2px;
 }
+.button {
+    height: 12vw;
+    width: 12vw;
+    font-size: 5vw;
+    margin: 0.1em;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    background-color: lightgrey;
+    user-select: none;
+}
 .empty {
     border-color: lightgrey;
 }
@@ -39,24 +52,11 @@ body {
     background-color: goldenrod;
     color: white;
 }
-.button {
-    height: 12vw;
-    width: 12vw;
-    font-size: 5vw;
-    margin: 0.1em;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 2px;
-    background-color: lightgrey;
-    user-select: none;
-}
 .button:hover {
-    background-color: silver;
+    filter: brightness(1.1);
 }
 .button:active {
-    background-color: darkgrey;
+    filter: brightness(1.05);
 }
 @media screen and (min-width: 992px) {
     .grid {
