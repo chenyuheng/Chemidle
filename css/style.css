@@ -4,6 +4,7 @@ body {
 .row {
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 .grid {
     height: 5vw;
@@ -18,7 +19,7 @@ body {
     border-style: solid;
     border-width: 2px;
 }
-.button {
+.key {
     height: 12vw;
     width: 12vw;
     font-size: 5vw;
@@ -30,6 +31,12 @@ body {
     border-radius: 2px;
     background-color: lightgrey;
     user-select: none;
+}
+.button {
+    margin: 0.2em;
+}
+.button a {
+    color: black;
 }
 .empty {
     border-color: lightgrey;
@@ -52,10 +59,10 @@ body {
     background-color: goldenrod;
     color: white;
 }
-.button:hover {
+.key:hover {
     filter: brightness(1.1);
 }
-.button:active {
+.key:active {
     filter: brightness(1.05);
 }
 @media screen and (min-width: 992px) {
@@ -66,7 +73,7 @@ body {
     }
 }
 @media screen and (min-width: 600px) {
-    .button {
+    .key {
         height: 50px;
         width: 40px;
         font-size: 24px;
