@@ -38,7 +38,6 @@ const icons = {
 var current_row = 0;
 var current_col = 0;
 var target_equation = "";
-var target_equation_tokens = [];
 
 Array.prototype.count = function(element) {
     return this.filter(x => x == element).length;
@@ -252,7 +251,7 @@ function get_equations() {
                 if (line == "" || line.startsWith("#")) {
                     continue;
                 }
-                let f = equation_checker(equation_parser(line));
+                let f = equation_checker(line);
                 if (!f) {
                     console.log("check fail: " + line);
                 } else {
@@ -264,7 +263,7 @@ function get_equations() {
             while (true) {
                 let random = Math.floor(Math.random() * lines.length);
                 target_equation = lines[random].trim();
-                target_equation_tokens = equation_tokenizer(target_equation, row_length);
+                let target_equation_tokens = equation_tokenizer(target_equation, row_length);
                 if (target_equation_tokens.length <= row_length) {
                     break;
                 }
@@ -295,15 +294,30 @@ function handle_submit() {
         return;
     }
     let submit_equation_tokens = equation_tokenizer(submit_equation, row_length);
+    let target_equation_tokens = equation_tokenizer(target_equation, row_length);
     let col_no = 0;
+    let miss_count = {};
+    for (; col_no < row_length; col_no++) {
+        let target_token = target_equation_tokens[col_no];
+        if (miss_count[target_token] == undefined) {
+            miss_count[target_token] = 0;
+        }
+        if (submit_equation_tokens[col_no] != target_token) {
+            miss_count[target_token]++;
+        }
+    }
+    console.log(miss_count);
+    col_no = 0;
     for (; col_no < row_length; col_no++) {
         let id = current_row + "_" + col_no;
+        $("#" + id).attr("class", "missed grid");
         if (submit_equation_tokens[col_no] == target_equation_tokens[col_no]) {
             $("#" + id).attr("class", "hit grid");
         } else if (target_equation_tokens.includes(submit_equation_tokens[col_no])) {
-            $("#" + id).attr("class", "partial-hit grid");
-        } else {
-            $("#" + id).attr("class", "missed grid");
+            if (miss_count[submit_equation_tokens[col_no]]  > 0) {
+                $("#" + id).attr("class", "partial-hit grid");
+                miss_count[submit_equation_tokens[col_no]]--;
+            }
         }
     }
     current_row++;
