@@ -15,22 +15,13 @@ const keyboard_chars = [
     ["K", "Ca", "+", "→", "(", ")", "←", "J"]
 ]
 
-const icons = {
+const key_icons = {
     "←": {
-        "svg": `
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-backspace" viewBox="0 0 16 16">
-                <path d="M5.83 5.146a.5.5 0 0 0 0 .708L7.975 8l-2.147 2.146a.5.5 0 0 0 .707.708l2.147-2.147 2.146 2.147a.5.5 0 0 0 .707-.708L9.39 8l2.146-2.146a.5.5 0 0 0-.707-.708L8.683 7.293 6.536 5.146a.5.5 0 0 0-.707 0z" />
-                <path d="M13.683 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-7.08a2 2 0 0 1-1.519-.698L.241 8.65a1 1 0 0 1 0-1.302L5.084 1.7A2 2 0 0 1 6.603 1h7.08zm-7.08 1a1 1 0 0 0-.76.35L1 8l4.844 5.65a1 1 0 0 0 .759.35h7.08a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1h-7.08z" />
-            </svg>
-        `,
+        "name": "backspace",
         "color": "red"
     },
     "J": {
-        "svg": `
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z" />
-            </svg>
-        `,
+        "name": "arrow-return-left",
         "color": "green"
     }
 }
@@ -307,10 +298,10 @@ function handle_submit() {
     for (; col_no < row_length; col_no++) {
         let id = current_row + "_" + col_no;
         let grid = $("#" + id);
-        let button = $("[token='" + submit_equation_tokens[col_no] + "']");
+        let key = $("[token='" + submit_equation_tokens[col_no] + "']");
         if (submit_equation_tokens[col_no] == target_equation_tokens[col_no]) {
             grid.attr("class", "hit grid");
-            button.attr("class", "hit button");
+            key.attr("class", "hit key");
         } else if (target_equation_tokens.includes(submit_equation_tokens[col_no])) {
             if (miss_count[submit_equation_tokens[col_no]]  > 0) {
                 grid.attr("class", "partial-hit grid");
@@ -318,12 +309,12 @@ function handle_submit() {
             } else {
                 grid.attr("class", "missed grid");
             }
-            if (button.attr("class") != "hit button") {
-                button.attr("class", "partial-hit button")
+            if (key.attr("class") != "hit key") {
+                key.attr("class", "partial-hit key")
             }
         } else {
             grid.attr("class", "missed grid");
-            button.attr("class", "missed button");
+            key.attr("class", "missed key");
         }
     }
     current_row++;
@@ -340,7 +331,7 @@ function handle_equation_token(token) {
     current_col++;
 }
 
-function handle_button(token) {
+function handle_key(token) {
     if (token == "←") {
         handle_backspace();
     } else if (token == "J") {
@@ -377,21 +368,23 @@ function display_keyborad() {
         keyboard.append(row);
         let col_no = 0;
         for (; col_no < keyboard_chars[row_no].length; col_no++) {
-            let button = $("<div></div>");
-            button.attr("class", "button");
+            let key = $("<div></div>");
+            key.attr("class", "key");
             let char = keyboard_chars[row_no][col_no];
-            if (char in icons) {
-                button.html(icons[char].svg);
-                button.css("color", icons[char].color);
+            if (char in key_icons) {
+                let icon = $("<i></i>");
+                icon.text(key_icons[char].name);
+                key.append(icon);
+                key.css("color", key_icons[char].color);
             } else {
-                button.text(char);
+                key.text(char);
             }
-            button.attr("onclick", "handle_button('" + char + "');");
-            button.attr("token", char);
+            key.attr("onclick", "handle_key('" + char + "');");
+            key.attr("token", char);
             if (char == "→") {
-                button.attr("token", "=")
+                key.attr("token", "=")
             }
-            row.append(button);
+            row.append(key);
         }
     }
 }
@@ -400,4 +393,5 @@ function init() {
     display_grids();
     display_keyborad();
     get_equations();
+    renders_icons();
 }
