@@ -389,9 +389,27 @@ function display_keyborad() {
     }
 }
 
+function close_modal() {
+    $("#modal").css("display", "none");
+}
+
+function open_modal() {
+    $("#modal").css("display", "block");
+}
+
+function add_listeners() {
+    window.onclick = function(event) {
+        if (event.target == $("#modal")[0]) {
+          close_modal();
+        }
+    }
+    $("#close").on("click", close_modal);
+}
+
 function init() {
     display_grids();
     display_keyborad();
     get_equations();
     renders_icons();
+    add_listeners();
 }
