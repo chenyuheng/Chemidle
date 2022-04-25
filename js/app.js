@@ -403,7 +403,8 @@ function add_listeners() {
           close_modal();
         }
     }
-    $("#close").on("click", close_modal);
+    $("#close").click(close_modal);
+    $("#help_button").click(function(){display_module("help");});
 }
 
 function init() {
