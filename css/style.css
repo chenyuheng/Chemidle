@@ -7,8 +7,8 @@ body {
     align-items: center;
 }
 .grid {
-    height: 5vw;
-    width: 5vw;
+    height: 4vw;
+    width: 4vw;
     margin: 0.1em;
     margin-bottom: 0.2em;
     text-align: center;
@@ -82,6 +82,11 @@ body {
         width: 40px;
         font-size: 24px;
     }
+    .small {
+        height: 26px;
+        width: 26px;
+        font-size: 20px;
+    }
 }
 
 /* modal is from https://www.w3schools.com/howto/howto_css_modals.asp */
@@ -108,6 +113,12 @@ body {
     border: 1px solid #888;
     border-radius: 0.5em;
     width: 80%;
+}
+
+@media screen and (min-width: 600px) {
+    #modal-box {
+        width: 480px;
+    }
 }
 
 /* The Close Button */
