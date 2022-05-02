@@ -11,6 +11,19 @@ const modules = {
 <div class="row" id="row_3"><div class="hit grid small" id="3_0">C</div><div class="hit grid small" id="3_1">O</div><div class="hit grid small" id="3_2">2</div><div class="hit grid small" id="3_3">+</div><div class="hit grid small" id="3_4">H</div><div class="hit grid small" id="3_5">2</div><div class="hit grid small" id="3_6">O</div><div class="hit grid small" id="3_7">→</div><div class="hit grid small" id="3_8">H</div><div class="hit grid small" id="3_9">2</div><div class="hit grid small" id="3_10">C</div><div class="hit grid small" id="3_11">O</div><div class="hit grid small" id="3_12">3</div><div class="hit grid small" id="3_13"></div><div class="hit grid small" id="3_14"></div></div>
 <p i18n-key="help-5"></p>
         `
+    },
+    "statistics": {
+        "title": "<span i18n-key='statistics'></span>",
+        "content": `
+<div class="row">
+    <span class="item-left" i18n-key="played"></span> 
+    <span class="item-right" id="played"></span>
+</div>
+<div class="row">
+    <span class="item-left" i18n-key="win-rate"></span> 
+    <span class="item-right" id="win-rate"></span>
+</div>
+        `
     }
 }
 

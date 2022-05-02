@@ -4,7 +4,7 @@ const token_set = [
     "He", "Li", "Be", "Na", "Mg", "Al", "Si",  "Cl", "Ca", "He", "Ne", "Ar",
     "H", "B", "C", "N", "O", "F", "P", "S", "K",
     "1", "2", "3", "4", "5", "6", 
-    "=", "+", "(", ")"];
+    "→", "+", "(", ")"];
 
 const number_tokens = ["1", "2", "3", "4", "5", "6"];
 
@@ -54,6 +54,21 @@ Object.prototype.add = function(key, number) {
         this[key] = 0;
     }
     this[key] += number;
+}
+
+Date.prototype.toString = function() {
+    return this.toISOString().slice(0, 10);
+}
+
+String.prototype.hashCode = function() {
+    var hash = 0, i, chr;
+    if (this.length === 0) return hash;
+    for (i = 0; i < this.length; i++) {
+      chr   = this.charCodeAt(i);
+      hash  = ((hash << 5) - hash) + chr;
+      hash |= 0; // Convert to 32bit integer
+    }
+    return hash;
 }
 
 function equation_tokenizer(equation_str, length=-1) {
@@ -179,11 +194,11 @@ function equation_parser(equation_str) {
     if (tokens == null) {
         return;
     }
-    if (tokens.count("=") != 1) {
-        console.error("parser error: number of = is not 1");
+    if (tokens.count("→") != 1) {
+        console.error("parser error: number of → is not 1");
         return;
     }
-    let half_parts = tokens.split("=");
+    let half_parts = tokens.split("→");
     let left = half_equation_parser(half_parts[0]);
     let right = half_equation_parser(half_parts[1]);
     if (left == null || right == null) {
@@ -240,6 +255,7 @@ function get_equations() {
             let c = {};
             for (let i = 0; i < lines.length; i++) {
                 let line = lines[i].trim();
+                line = line.replace("=", "→");
                 if (line == "" || line.startsWith("#")) {
                     continue;
                 }
@@ -254,8 +270,9 @@ function get_equations() {
                     }
                 }
             }
-            let random = Math.floor(Math.random() * equations.length);
-            target_equation = equations[random];   
+            let index = new Date().toString().hashCode() % equations.length;
+            target_equation = equations[index];
+            localStorage.setItem("target-equation", target_equation);
         }
     };
     r.open("GET", "data/equations.txt");
@@ -263,7 +280,7 @@ function get_equations() {
 }
 
 function extract_equation(row_no) {
-    return $("#row_" + row_no).text().replace("→", "=");
+    return $("#row_" + row_no).text();
 }
 
 function handle_backspace() {
@@ -275,11 +292,13 @@ function handle_backspace() {
     }
 }
 
-function handle_submit() {
-    let submit_equation = extract_equation(current_row);
+function handle_submit(submit_equation, replay) {
     if (!equation_checker(submit_equation)) {
         alert("invalid equation");
         return;
+    }
+    if (!replay) {
+        localStorage.setItem("guess-" + current_row.toString(), submit_equation);
     }
     let submit_equation_tokens = equation_tokenizer(submit_equation, row_length);
     let target_equation_tokens = equation_tokenizer(target_equation, row_length);
@@ -295,31 +314,49 @@ function handle_submit() {
         }
     }
     col_no = 0;
+    let win = true;
     for (; col_no < row_length; col_no++) {
         let id = current_row + "_" + col_no;
+        let submit_token = submit_equation_tokens[col_no];
         let grid = $("#" + id);
-        let key = $("[token='" + submit_equation_tokens[col_no] + "']");
-        if (submit_equation_tokens[col_no] == target_equation_tokens[col_no]) {
+        let key = $("[token='" + submit_token + "']");
+        grid.text(submit_token);
+        if (submit_token == target_equation_tokens[col_no]) {
             grid.attr("class", "hit grid");
             key.attr("class", "hit key");
-        } else if (target_equation_tokens.includes(submit_equation_tokens[col_no])) {
-            if (miss_count[submit_equation_tokens[col_no]]  > 0) {
+        } else if (target_equation_tokens.includes(submit_token)) {
+            if (miss_count[submit_token]  > 0) {
                 grid.attr("class", "partial-hit grid");
-                miss_count[submit_equation_tokens[col_no]]--;
+                miss_count[submit_token]--;
             } else {
                 grid.attr("class", "missed grid");
             }
             if (key.attr("class") != "hit key") {
                 key.attr("class", "partial-hit key")
             }
+            win = false;
         } else {
             grid.attr("class", "missed grid");
             key.attr("class", "missed key");
+            win = false;
         }
+    }
+    if (win && !replay) {
+        let played_num = parseInt(localStorage.getItem("played")) + 1;
+        let win_num = parseInt(localStorage.getItem("win")) + 1;
+        localStorage.setItem("played", played_num);
+        localStorage.setItem("win", win_num);
+        localStorage.setItem("last-finished-date", new Date());
+        alert("nice");
+        $("#statistics-button").click();
+        return;
     }
     current_row++;
     current_col = 0;
-    if (current_row >= row_number) {
+    if (current_row >= row_number && !replay) {
+        let played_num = parseInt(localStorage.getItem("played")) + 1;
+        localStorage.setItem("played", played_num);
+        localStorage.setItem("last-finished-date", new Date());
         alert("the target equation is: " + target_equation);
     }
 }
@@ -332,10 +369,14 @@ function handle_equation_token(token) {
 }
 
 function handle_key(token) {
+    if (localStorage.getItem("last-finished-date") == new Date().toString()) {
+        return;
+    }
     if (token == "←") {
         handle_backspace();
     } else if (token == "J") {
-        handle_submit();
+        let submit_equation = extract_equation(current_row);
+        handle_submit(submit_equation, false);
     } else {
         handle_equation_token(token);
     }
@@ -381,9 +422,6 @@ function display_keyborad() {
             }
             key.attr("onclick", "handle_key('" + char + "');");
             key.attr("token", char);
-            if (char == "→") {
-                key.attr("token", "=")
-            }
             row.append(key);
         }
     }
@@ -397,6 +435,58 @@ function open_modal() {
     $("#modal").css("display", "block");
 }
 
+function sync_data() {
+    if (localStorage.getItem("played") == null) {
+        localStorage.setItem("played", "0");
+        localStorage.setItem("win", "0");
+        display_module("help");
+    }
+
+    if (localStorage.getItem("last-started-date") != new Date().toString()) {
+        get_equations();
+        localStorage.setItem("last-started-date", new Date());
+        for (let i = 0; i < row_number; i++) {
+            localStorage.removeItem("guess-" + i.toString());
+        }
+    }
+    target_equation = localStorage.getItem("target-equation");
+
+    for (let i = 0; localStorage.getItem("guess-" + i.toString()) != null; i++) {
+        let equation = localStorage.getItem("guess-" + i.toString());
+        handle_submit(equation, true);
+    }
+}
+
+function display_statistics() {
+    display_module("statistics");
+    let played = parseInt(localStorage.getItem("played"));
+    let win = parseInt(localStorage.getItem("win"));
+    $("#played").text(played);
+    $("#win-rate").text(win / played);
+    if (localStorage.getItem("last-finished-date") == new Date().toString()) {
+        let div = $("<div class=\"row\"></div>");
+        div.html( `
+            <span class="item-left" i18n-key="remainnig-time"></span>
+            <span class="item-right" id="remainning-time"></span>
+        `);
+        $("#modal-content").append(div);
+        translate();
+        let display_countdown = function(){
+            var now = new Date();
+            var hoursleft = 23-now.getHours();
+            var minutesleft = 59-now.getMinutes();
+            var secondsleft = 59-now.getSeconds();
+            //format 0 prefixes
+            if(minutesleft<10) minutesleft = "0"+minutesleft;
+            if(secondsleft<10) secondsleft = "0"+secondsleft;
+            //display
+            $('#remainning-time').html(hoursleft+":"+minutesleft+":"+secondsleft);
+        }
+        display_countdown();
+        setInterval(display_countdown, 1000);
+    }
+}
+
 function add_listeners() {
     window.onclick = function(event) {
         if (event.target == $("#modal")[0]) {
@@ -404,13 +494,14 @@ function add_listeners() {
         }
     }
     $("#close").click(close_modal);
-    $("#help_button").click(function(){display_module("help");});
+    $("#help-button").click(function(){display_module("help");});
+    $("#statistics-button").click(display_statistics);
 }
 
 function init() {
     display_grids();
     display_keyborad();
-    get_equations();
+    sync_data();
     renders_icons();
     add_listeners();
 }

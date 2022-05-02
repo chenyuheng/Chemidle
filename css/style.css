@@ -128,3 +128,14 @@ body {
 #modal-title {
     font-size: 2em;
 }
+
+.item-left {
+    width: 75%;
+    text-align: left;
+    font-weight: bold;
+}
+.item-right {
+    width: 25%;
+    text-align: right;
+    font-family: 'Courier New', Courier, monospace;
+}
