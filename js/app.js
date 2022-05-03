@@ -60,6 +60,7 @@ Date.prototype.toString = function() {
     return this.toISOString().slice(0, 10);
 }
 
+// code from https://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
 String.prototype.hashCode = function() {
     var hash = 0, i, chr;
     if (this.length === 0) return hash;
@@ -439,9 +440,10 @@ function sync_data() {
     if (localStorage.getItem("played") == null) {
         localStorage.setItem("played", "0");
         localStorage.setItem("win", "0");
+    }
+    if (localStorage.getItem("last-finished-date") == null) {
         display_module("help");
     }
-
     if (localStorage.getItem("last-started-date") != new Date().toString()) {
         get_equations();
         localStorage.setItem("last-started-date", new Date());
@@ -472,15 +474,20 @@ function display_statistics() {
         $("#modal-content").append(div);
         translate();
         let display_countdown = function(){
+            // code adapted from https://shanelabs.com/blog/2011/12/08/end-of-the-day-countdown-in-javascript/
             var now = new Date();
-            var hoursleft = 23-now.getHours();
-            var minutesleft = 59-now.getMinutes();
-            var secondsleft = 59-now.getSeconds();
+            var hoursleft = 23 - now.getHours();
+            var minutesleft = 59 - now.getMinutes();
+            var secondsleft = 59 - now.getSeconds();
             //format 0 prefixes
-            if(minutesleft<10) minutesleft = "0"+minutesleft;
-            if(secondsleft<10) secondsleft = "0"+secondsleft;
+            if (minutesleft < 10) {
+                minutesleft = "0" + minutesleft;
+            }
+            if (secondsleft < 10) {
+                secondsleft = "0" + secondsleft;
+            }
             //display
-            $('#remainning-time').html(hoursleft+":"+minutesleft+":"+secondsleft);
+            $('#remainning-time').html(hoursleft + ":" + minutesleft + ":" + secondsleft);
         }
         display_countdown();
         setInterval(display_countdown, 1000);
