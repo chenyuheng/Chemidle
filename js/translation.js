@@ -9,7 +9,9 @@ const lang_dict = {
         "statistics": "Statistics",
         "played": "Played",
         "win-rate": "Win Rate %",
-        "remainnig-time": "Next Chemidle"
+        "remainnig-time": "Next Chemidle",
+        "settings": "Settings",
+        "clear-localstorage": "Clear local storage"
     },
     "zh": {
         "help": "游戏规则",
@@ -21,7 +23,9 @@ const lang_dict = {
         "statistics": "统计",
         "played": "游玩次数",
         "win-rate": "胜率 %",
-        "remainnig-time": "距离下一次还有"
+        "remainnig-time": "距离下一次还有",
+        "settings": "设置",
+        "clear-localstorage": "清空本地数据"
     }
 };
 

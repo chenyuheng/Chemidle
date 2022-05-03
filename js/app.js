@@ -503,6 +503,12 @@ function add_listeners() {
     $("#close").click(close_modal);
     $("#help-button").click(function(){display_module("help");});
     $("#statistics-button").click(display_statistics);
+    $("#settings-button").click(function(){display_module("settings");});
+}
+
+function clear_localstorage() {
+    localStorage.clear();
+    location.reload();
 }
 
 function init() {

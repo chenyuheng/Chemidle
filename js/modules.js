@@ -24,6 +24,14 @@ const modules = {
     <span class="item-right" id="win-rate"></span>
 </div>
         `
+    },
+    "settings": {
+        "title": "<span i18n-key='settings'></span>",
+        "content": `
+<div class="row">
+    <div class="danger button" i18n-key="clear-localstorage" onclick="clear_localstorage();"></div> 
+</div>
+        `
     }
 }
 
