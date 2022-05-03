@@ -19,7 +19,13 @@ const lang_dict = {
         "github": "GitHub",
         "invalid-equation": "Invalid equation",
         "nice": "Nice!",
-        "target-equation": "Guess incorrect, the target equation is: "
+        "target-equation": "Guess incorrect, the target equation is: ",
+        "share": "Share",
+        "share-text-clipboard": "https://Chemidle.com/ Chemical equation Wordle",
+        "share-text": "Chemical equation Wordle",
+        "copy-clip-button": "Copy to clipboard",
+        "share-button": "Share to ...",
+        "copied": "Copied"
     },
     "zh": {
         "help": "游戏规则",
@@ -41,7 +47,13 @@ const lang_dict = {
         "github": "GitHub",
         "invalid-equation": "方程式不合法",
         "nice": "赞！",
-        "target-equation": "猜错了，目标方程式是："
+        "target-equation": "猜错了，目标方程式是：",
+        "share": "分享",
+        "share-text-clipboard": "https://Chemidle.com/ 化学方程式 Wordle",
+        "share-text": "化学方程式 Wordle",
+        "copy-clip-button": "复制到剪贴板",
+        "share-button": "分享到…",
+        "copied": "已复制"
     }
 };
 

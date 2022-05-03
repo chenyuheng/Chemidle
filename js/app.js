@@ -520,6 +520,7 @@ function add_listeners() {
     $("#help-button").click(function(){display_module("help");});
     $("#statistics-button").click(display_statistics);
     $("#settings-button").click(diaplay_settings);
+    $("#share-button").click(function(){display_module("share");});
 }
 
 function clear_localstorage() {
@@ -534,6 +535,20 @@ function toasts(messaage) {
         $("#snackbar").attr("class", "");
     }, 3000);
 }
+
+function copy(text) {
+    $("textarea")[0].select();
+    let result = document.execCommand("copy");
+    toasts(translate("copied"));
+ }
+
+ function share() {
+    navigator.share({
+        title: document.title,
+        text: translate("share-text"),
+        url: "https://Chemidle.com/"
+    });
+ }
 
 function init() {
     display_grids();

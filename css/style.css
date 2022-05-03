@@ -129,11 +129,22 @@ body {
     padding-right: 1em;
     padding-top: 0.3em;
     padding-bottom: 0.3em;
+    margin: 0.3em;
 }
 .button:hover,
 .button:focus {
     text-decoration: none;
     cursor: pointer;
+}
+.primary {
+    border-color: #2a9147;
+    background-color: #2da44e;
+    color: white;
+}
+.primary:hover,
+.primary:focus {
+    border-color: #298545;
+    background-color: #2c974b;
 }
 .danger {
     border-color: #d5d8da;
@@ -142,7 +153,7 @@ body {
 }
 .danger:hover,
 .danger:focus {
-    border-color: #cf222e;
+    border-color: #901125;
     background-color: #cf222e;
     color: #f6f8fa;
 }
@@ -176,6 +187,10 @@ hr {
 
 a {
     color: darkgray;
+}
+
+textarea {
+    margin: 1em;
 }
 
 /* snackbar code from https://www.w3schools.com/howto/howto_js_snackbar.asp */

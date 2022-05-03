@@ -60,6 +60,18 @@ const modules = {
     <div class="danger button" i18n-key="clear-localstorage" onclick="clear_localstorage();"></div> 
 </div>
         `
+    },
+    "share": {
+        "title": "<span i18n-key='share'></span>",
+        "content": `
+<div class="row">
+    <textarea i18n-key="share-text-clipboard"></textarea>
+</div>
+<div class="row">
+    <div class="primary button" i18n-key="copy-clip-button" onclick="copy();"></div>
+    <div class="primary button" i18n-key="share-button" onclick="share();"></div>
+</div>
+        `
     }
 }
 
