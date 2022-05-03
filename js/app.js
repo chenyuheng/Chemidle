@@ -430,6 +430,7 @@ function display_keyborad() {
 
 function close_modal() {
     $("#modal").css("display", "none");
+    $('input[type=radio][name=language]').off("change");
 }
 
 function open_modal() {
@@ -464,7 +465,7 @@ function display_statistics() {
     let played = parseInt(localStorage.getItem("played"));
     let win = parseInt(localStorage.getItem("win"));
     $("#played").text(played);
-    $("#win-rate").text(win / played);
+    $("#win-rate").text((win / played) * 100);
     if (localStorage.getItem("last-finished-date") == new Date().toString()) {
         let div = $("<div class=\"row\"></div>");
         div.html( `
@@ -494,6 +495,21 @@ function display_statistics() {
     }
 }
 
+function diaplay_settings() {
+    display_module("settings");
+    if (localStorage.getItem("language") == "zh") {
+        $("#lang-zh").prop("checked", true);
+    } else {
+        $("#lang-en").prop("checked", true);
+    }
+}
+
+function change_language(new_lang) {
+    lang = new_lang;
+    localStorage.setItem("language", lang);
+    translate();
+}
+
 function add_listeners() {
     window.onclick = function(event) {
         if (event.target == $("#modal")[0]) {
@@ -503,7 +519,7 @@ function add_listeners() {
     $("#close").click(close_modal);
     $("#help-button").click(function(){display_module("help");});
     $("#statistics-button").click(display_statistics);
-    $("#settings-button").click(function(){display_module("settings");});
+    $("#settings-button").click(diaplay_settings);
 }
 
 function clear_localstorage() {

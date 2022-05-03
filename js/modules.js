@@ -17,17 +17,45 @@ const modules = {
         "content": `
 <div class="row">
     <span class="item-left" i18n-key="played"></span> 
-    <span class="item-right" id="played"></span>
+    <span class="item-right data" id="played"></span>
 </div>
 <div class="row">
-    <span class="item-left" i18n-key="win-rate"></span> 
-    <span class="item-right" id="win-rate"></span>
+    <span class="item-left" i18n-key="win-rate"></span>
+    <span class="item-right data" id="win-rate"></span>
 </div>
         `
     },
     "settings": {
         "title": "<span i18n-key='settings'></span>",
         "content": `
+<div class="row">
+    <div class="item-left" i18n-key="language"></div> 
+    <div class="item-right">
+        <label for="lang-zh">中文</label>
+        <input type="radio" name="language" value="zh" id="lang-zh" onclick="change_language('zh');" />
+    </div>
+</div>
+<div class="row">
+    <div class="item-left"></div> 
+    <div class="item-right">
+        <label for="lang-en">English</label>
+        <input type="radio" name="language" value="en" id="lang-en" onclick="change_language('en');" />
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="item-left" i18n-key="feedback"></div> 
+    <div class="item-right">
+        <a href="https://github.com/chenyuheng/Chemidle/issues" i18n-key="issues" target=_blank"></a>
+    </div>
+</div>
+<div class="row">
+    <div class="item-left" i18n-key="project"></div> 
+    <div class="item-right">
+        <a href="https://github.com/chenyuheng/Chemidle" i18n-key="github" target=_blank"></a>
+    </div>
+</div>
+<hr />
 <div class="row">
     <div class="danger button" i18n-key="clear-localstorage" onclick="clear_localstorage();"></div> 
 </div>

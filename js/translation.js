@@ -11,7 +11,12 @@ const lang_dict = {
         "win-rate": "Win Rate %",
         "remainnig-time": "Next Chemidle",
         "settings": "Settings",
-        "clear-localstorage": "Clear local storage"
+        "clear-localstorage": "Clear local storage",
+        "language": "language",
+        "feedback": "Feedback",
+        "issues": "Issues",
+        "project": "Project address",
+        "github": "GitHub"
     },
     "zh": {
         "help": "游戏规则",
@@ -25,14 +30,27 @@ const lang_dict = {
         "win-rate": "胜率 %",
         "remainnig-time": "距离下一次还有",
         "settings": "设置",
-        "clear-localstorage": "清空本地数据"
+        "clear-localstorage": "清空本地数据",
+        "language": "语言",
+        "feedback": "反馈",
+        "issues": "Issues",
+        "project": "项目地址",
+        "github": "GitHub"
     }
 };
 
+var lang = "";
+
 function get_lang() {
+    if (lang != "") {
+        return lang;
+    }
     let lang_url = new URLSearchParams(window.location.search).get("lng");
     if (lang_url) {
         return lang_url.substring(0,2);
+    }
+    if (localStorage.getItem("language") != null) {
+        return localStorage.getItem("language").substring(0, 2);
     }
     let language = window.navigator.userLanguage || window.navigator.language;
     return language.substring(0, 2);
@@ -40,6 +58,7 @@ function get_lang() {
 
 function translate() {
     let lang = get_lang();
+    localStorage.setItem("language", lang);
     let dict = lang_dict["default"];
     if (lang in lang_dict) {
         dict = lang_dict[lang];
