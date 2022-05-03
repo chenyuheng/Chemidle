@@ -67,6 +67,6 @@ function display_module(module_name) {
     let module_data = modules[module_name];
     $("#modal-title").html(module_data["title"]);
     $("#modal-content").html(module_data["content"]);
-    translate();
+    translate_all();
     open_modal();
 }

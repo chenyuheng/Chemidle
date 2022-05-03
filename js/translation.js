@@ -16,7 +16,10 @@ const lang_dict = {
         "feedback": "Feedback",
         "issues": "Issues",
         "project": "Project address",
-        "github": "GitHub"
+        "github": "GitHub",
+        "invalid-equation": "Invalid equation",
+        "nice": "Nice!",
+        "target-equation": "Guess incorrect, the target equation is: "
     },
     "zh": {
         "help": "游戏规则",
@@ -35,7 +38,10 @@ const lang_dict = {
         "feedback": "反馈",
         "issues": "Issues",
         "project": "项目地址",
-        "github": "GitHub"
+        "github": "GitHub",
+        "invalid-equation": "方程式不合法",
+        "nice": "赞！",
+        "target-equation": "猜错了，目标方程式是："
     }
 };
 
@@ -56,7 +62,7 @@ function get_lang() {
     return language.substring(0, 2);
 }
 
-function translate() {
+function translate_all() {
     let lang = get_lang();
     localStorage.setItem("language", lang);
     let dict = lang_dict["default"];
@@ -68,4 +74,14 @@ function translate() {
             $(this).html(dict[$(this).attr("i18n-key")]);
         }
     )
+}
+
+function translate(key) {
+    let lang = get_lang();
+    localStorage.setItem("language", lang);
+    let dict = lang_dict["default"];
+    if (lang in lang_dict) {
+        dict = lang_dict[lang];
+    }
+    return dict[key];
 }

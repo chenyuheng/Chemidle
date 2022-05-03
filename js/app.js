@@ -295,7 +295,7 @@ function handle_backspace() {
 
 function handle_submit(submit_equation, replay) {
     if (!equation_checker(submit_equation)) {
-        alert("invalid equation");
+        toasts(translate("invalid-equation"));
         return;
     }
     if (!replay) {
@@ -348,7 +348,7 @@ function handle_submit(submit_equation, replay) {
         localStorage.setItem("played", played_num);
         localStorage.setItem("win", win_num);
         localStorage.setItem("last-finished-date", new Date());
-        alert("nice");
+        toasts(translate("nice"));
         $("#statistics-button").click();
         return;
     }
@@ -358,7 +358,7 @@ function handle_submit(submit_equation, replay) {
         let played_num = parseInt(localStorage.getItem("played")) + 1;
         localStorage.setItem("played", played_num);
         localStorage.setItem("last-finished-date", new Date());
-        alert("the target equation is: " + target_equation);
+        toasts(translate("target-equation") + target_equation);
     }
 }
 
@@ -473,7 +473,7 @@ function display_statistics() {
             <span class="item-right" id="remainning-time"></span>
         `);
         $("#modal-content").append(div);
-        translate();
+        translate_all();
         let display_countdown = function(){
             // code adapted from https://shanelabs.com/blog/2011/12/08/end-of-the-day-countdown-in-javascript/
             var now = new Date();
@@ -507,7 +507,7 @@ function diaplay_settings() {
 function change_language(new_lang) {
     lang = new_lang;
     localStorage.setItem("language", lang);
-    translate();
+    translate_all();
 }
 
 function add_listeners() {
@@ -525,6 +525,14 @@ function add_listeners() {
 function clear_localstorage() {
     localStorage.clear();
     location.reload();
+}
+
+function toasts(messaage) {
+    $("#snackbar").html(messaage);
+    $("#snackbar").attr("class", "show");
+    setTimeout(function(){
+        $("#snackbar").attr("class", "");
+    }, 3000);
 }
 
 function init() {
