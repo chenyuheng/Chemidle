@@ -231,9 +231,7 @@ function equation_checker(equation_str) {
     }
     let left_count = atoms_counter(equation.left);
     let right_count = atoms_counter(equation.right);
-    // console.log(left_count);
-    // console.log(right_count);
-    if (left_count.size != right_count.size) {
+    if (Object.keys(left_count).length != Object.keys(right_count).length) {
         return false;
     }
     for (k in left_count) {
